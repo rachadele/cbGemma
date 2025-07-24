@@ -18,4 +18,4 @@ Default profile is set to `conda` with a pre-existing environment path. Use `-re
 Cellbrowser builds are be published in `/space/gemmaData/cellBrowser` by default per the `params.cb_outdir` parameter.
 The resulting web page will be viewable on the development server. For example:
 
-https://dev.gemma.msl.ubc.ca/cellbrowser/Velmeshev_et_al.1/?ds=cellBrowser
+https://dev.gemma.msl.ubc.ca/cellbrowser/Velmeshev_et_al.2/?ds=Velmeshev_et_al_2
