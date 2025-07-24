@@ -46,8 +46,7 @@ process runCbScanpy {
 
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
 
-	//publishDir "${params.cb_build_dir}/"
-	publishDir "${params.cb_build_dir}"
+	publishDir "${params.cb_build_dir}", mode: 'copy'
 
 	input:
 	tuple val(study_name), path(cell_level_meta), path(full_matrix)
@@ -72,7 +71,7 @@ process runCbBuild {
 	label 'cbBuild'
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
 
-	publishDir "${params.cb_outdir}"
+	publishDir "${params.cb_outdir}", mode: 'copy'
 
 	input:
 	tuple val(study_name), path(cb_dir)
