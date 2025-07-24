@@ -1,0 +1,10 @@
+work/
+.nextflow*
+nextflow.log*
+*h5ad
+*mtx
+test/
+*tsv
+*csv
+*png
+*gz
