@@ -3,7 +3,7 @@ process getCellMeta {
 	label 'getCellMeta'
 
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
-	publishDir "${params.outdir}/cell_meta"
+	//publishDir "${params.outdir}/cell_meta"
 
 	input:
 	val(study_name)
@@ -21,7 +21,7 @@ process getFullMatrix {
 	tag "$study_name"
 	label 'getFullMatrix'
 
-	publishDir "${params.outdir}/full_matrices/${study_name}"
+	//publishDir "${params.outdir}/full_matrices/${study_name}"
 
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
 
@@ -78,13 +78,13 @@ process runCbBuild {
 	tuple val(study_name), path(cb_dir)
 
 	output:
-	path "${new_study_name}/"
+	path "${study_name}/"
 
 	script:
 	new_study_name = study_name.replaceAll("\\.", "_")
 	""" 
 	cbBuild -i ${cb_dir}/cellbrowser.conf \\
-		-o ${new_study_name} 
+		-o ${study_name} 
 	"""
 
 }
