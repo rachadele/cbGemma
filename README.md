@@ -10,12 +10,12 @@
 ```bash
 git clone https://github.com/<your-username>/cbGemma.git
 cd cbGemma
-nextflow main.nf --study_names <experiment name 1>  <experiment name 2>
+nextflow main.nf --study_names <experiment>  <experiment>
 ```
 Default profile is set to `conda` with a pre-existing environment path. Use `-resume` to resume.
 
 ## Outputs
 Cellbrowser builds are be published in `/space/gemmaData/cellBrowser` by default per the `params.cb_outdir` parameter.
-The resulting web page will be viewable at:
+The resulting web page will be viewable on the development server. For example:
 
-https://dev.gemma.msl.ubc.ca/cellbrowser/experiment/?ds=cellBrowser
+https://dev.gemma.msl.ubc.ca/cellbrowser/Velmeshev_et_al.1/?ds=cellBrowser
