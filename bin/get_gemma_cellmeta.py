@@ -56,6 +56,7 @@ def get_cell_type_assignments(cell_type_assignments):
         cell_type_values = [cell_type_value_by_id[ct_id] if ct_id is not None else 
                             'NA' for ct_id in cell_type_ids]
         
+        
         tempdf = pd.DataFrame({
             assignment_protocol: cell_type_values,
         }) 
@@ -68,6 +69,9 @@ def get_cell_type_assignments(cell_type_assignments):
         elif assignment_protocol in combined_df.columns:
             print(f"Column {assignment_protocol} already exists in the combined DataFrame. Skipping.")
             continue
+    # drop columns called "NA" if they exist
+    combined_df = combined_df.loc[:, [col != "NA" for col in combined_df.columns]]
+    
     return combined_df 
         
 
