@@ -36,6 +36,7 @@ process getFullMatrix {
 	gemma-cli-staging getSingleCellDataMatrix -e ${study_name} \\
 						--format CELL_BROWSER \\
 						--use-bioassay-ids \\
+						--use-raw-column-names \\
 						--output-file ${study_name}_full_matrix.tsv.gz 
 	"""
 }
