@@ -32,8 +32,9 @@ process getFullMatrix {
 	tuple val(study_name), path("**full_matrix.tsv.gz"), emit: full_matrix
 
 	script:
+	def gemma_cmd = params.use_staging ?  "gemma-cli-staging" : "gemma-cli" 
 	"""
-	gemma-cli-staging getSingleCellDataMatrix -e ${study_name} \\
+	${gemma_mc} getSingleCellDataMatrix -e ${study_name} \\
 						--format CELL_BROWSER \\
 						--use-bioassay-ids \\
 						--no-cursor-fetch \\
