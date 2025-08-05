@@ -11,7 +11,7 @@ import gemmapy
 
 def argument_parser():
     parser = argparse.ArgumentParser(description="Preprocess data from GEMMA")
-    parser.add_argument("--study_name", type=str, help="Name of the study", default="Velmeshev_et_al.1")
+    parser.add_argument("--study_name", type=str, help="Name of the study", default="GSE247339.2")
     if __name__ == "__main__":
         known_args, _ = parser.parse_known_args()
         return known_args

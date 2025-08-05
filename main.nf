@@ -36,6 +36,8 @@ process getFullMatrix {
 	gemma-cli-staging getSingleCellDataMatrix -e ${study_name} \\
 						--format CELL_BROWSER \\
 						--use-bioassay-ids \\
+						--no-cursor-fetch \\
+						--no-auto-flush \\
 						--use-raw-column-names \\
 						--output-file ${study_name}_full_matrix.tsv.gz 
 	"""
@@ -56,7 +58,8 @@ process runCbScanpy {
 	tuple val(study_name), path("${new_study_name}/"), emit: cb_dir_channel
 
 	script:
-	new_study_name = study_name.replaceAll("\\.", "_")
+	// new_study_name = study_name.replaceAll("\\.", "_")
+	new_study_name = study_name.replaceAll("[^A-Za-z0-9-_]", "_")
 	"""
 	cbScanpy -e ${full_matrix} \\
 		  -m ${cell_level_meta} \\
@@ -72,27 +75,55 @@ process runCbBuild {
 	label 'cbBuild'
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
 
-	publishDir "${params.cb_outdir}", mode: 'copy'
+	//publishDir "${params.cb_outdir}", mode: 'copy'
 
 	input:
 	tuple val(study_name), path(cb_dir)
 
 	output:
-	path "${study_name}/"
+	path "${new_study_name}/"
 
 	script:
-	new_study_name = study_name.replaceAll("\\.", "_")
+	//new_study_name = study_name.replaceAll("\\.", "_")
+	new_study_name = study_name.replaceAll("[^A-Za-z0-9-_]", "_")
 	""" 
 	cbBuild -i ${cb_dir}/cellbrowser.conf \\
-		-o ${study_name} 
+		-o ${params.cb_outdir} \\
 	"""
 
 }
 
+
+
+process collect_cb_dirs {
+	tag "$study_name"
+	label 'collectCbDirs'
+
+	// "${params.cb_build_dir}", mode: 'copy'
+
+	input:
+	val cb_dir_channel
+
+	output:
+	path "parent_dir/", emit: cb_parent_dir
+	
+
+	script:
+	"""
+	mkdir -p parent_dir
+	for dir in ${cb_dir_channel}; do
+		echo "Moving $dir to parent_dir"
+		mv $dir parent_dir/
+	done
+	
+	"""
+}
+
 workflow {
 	// Define the study name
-	Channel.from(params.study_names)
-	.set { study_names }	
+	Channel
+    .from(params.study_names.split(/\s+/))
+    .set { study_names }
 
 	// Call the process to get cell metadata
 	getCellMeta(study_names)

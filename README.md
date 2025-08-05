@@ -10,7 +10,8 @@
 ```bash
 git clone https://github.com/<your-username>/cbGemma.git
 cd cbGemma
-nextflow main.nf --study_names <experiment>  <experiment>
+nextflow main.nf --study_names <experiment1> <experiment2>
+# optionally add the -resume flag to resume from nextflow cache
 ```
 Default profile is set to `conda` with a pre-existing environment path. Use `-resume` to resume.
 
