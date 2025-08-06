@@ -122,9 +122,25 @@ process collect_cb_dirs {
 
 workflow {
 	// Define the study name
-	Channel
-    .from(params.study_names.split(/\s+/))
-    .set { study_names }
+//Channel
+   // .from(params.study_names.split(/\s+/))
+   // .set { study_names }
+
+
+ 	study_names = (
+            file(params.study_names).exists() && file(params.study_names).isFile()
+                ? Channel.from(
+                      file(params.study_names)
+                          .readLines()
+                          .collect { it.trim() }
+                          .findAll { it }
+                          .collect { it }
+                  )
+                : Channel.from(
+                      params.study_names
+                          .split(/\s+/)
+                  )
+        )
 
 	// Call the process to get cell metadata
 	getCellMeta(study_names)
@@ -147,4 +163,13 @@ workflow {
 	.set { cb_dir_channel }
 
 	runCbBuild(cb_dir_channel)
+}
+
+workflow onComplete {
+	// print all study names
+	println "Processed studies: ${study_names.join(', ')}"
+	// print where output files are located
+	println "Cell Browser build complete. Output files are located in: ${params.cb_outdir}"
+	// print workdir
+	println "Work directory: ${workflow.workDir}"
 }
