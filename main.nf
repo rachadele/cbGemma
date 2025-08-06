@@ -34,7 +34,7 @@ process getFullMatrix {
 	script:
 	def gemma_cmd = params.use_staging ?  "gemma-cli-staging" : "gemma-cli" 
 	"""
-	${gemma_mc} getSingleCellDataMatrix -e ${study_name} \\
+	${gemma_cmd} getSingleCellDataMatrix -e ${study_name} \\
 						--format CELL_BROWSER \\
 						--use-bioassay-ids \\
 						--no-cursor-fetch \\
