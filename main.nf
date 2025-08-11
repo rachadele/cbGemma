@@ -165,11 +165,15 @@ workflow {
 	runCbBuild(cb_dir_channel)
 }
 
-workflow onComplete {
-	// print all study names
-	println "Processed studies: ${study_names.join(', ')}"
+workflow.onComplete {
 	// print where output files are located
 	println "Cell Browser build complete. Output files are located in: ${params.cb_outdir}"
 	// print workdir
 	println "Work directory: ${workflow.workDir}"
+
+	println "View the dataset at https://dev.gemma.msl.ubc.ca/cellbrowser/"
+}
+
+workflow.onError = {
+println "Error: something went wrong, check the pipeline log at '.nextflow.log"
 }
