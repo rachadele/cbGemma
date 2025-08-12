@@ -60,7 +60,7 @@ process runCbScanpy {
 
 	script:
 	// new_study_name = study_name.replaceAll("\\.", "_")
-	new_study_name = study_name.replaceAll("[^A-Za-z0-9-_]", "_")
+	new_study_name = study_name.replaceAll("[^A-Za-z0-9_]", "_")
 	"""
 	cbScanpy -e ${full_matrix} \\
 		  -m ${cell_level_meta} \\
@@ -86,7 +86,7 @@ process runCbBuild {
 
 	script:
 	//new_study_name = study_name.replaceAll("\\.", "_")
-	new_study_name = study_name.replaceAll("[^A-Za-z0-9-_]", "_")
+	new_study_name = study_name.replaceAll("[^A-Za-z0-9_]", "_")
 	""" 
 	cbBuild -i ${cb_dir}/cellbrowser.conf \\
 		-o ${params.cb_outdir} \\
