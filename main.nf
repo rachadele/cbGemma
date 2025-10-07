@@ -2,9 +2,6 @@ process getCellMeta {
 	tag "$study_name"
 	label 'getCellMeta'
 
-	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
-	//publishDir "${params.cb_build_dir}/cell_meta"
-
 	input:
 	val(study_name)
 
@@ -13,9 +10,11 @@ process getCellMeta {
 
 	script:
 	"""
-	python $projectDir/bin/get_gemma_cellmeta.py --study_name $study_name
+	gemma-cli getSingleCellMetadata -e ${study_name} --use-raw-column-names --use-bioassay-ids \\
+	--output-file ${study_name}_cell_level_meta.tsv.gz
 	"""
 }
+
 
 process getFullMatrix {
 	tag "$study_name"

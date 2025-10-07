@@ -122,6 +122,19 @@ def get_cell_level_meta(single_cell_dimension):
     combined_df["sample_id"] = sample_names
     return combined_df
     
+def get_sample_factor_values(samples):
+    sample_factor_values = samples.sample_factor_values 
+    # each row is a dataframe with factor categories and values for that sample
+    # need to combine these dataframes into one dataframe
+    combined_df = pd.DataFrame()
+    for i, sfv in enumerate(sample_factor_values):
+        sample_name = samples.iloc[i]["sample_name"]
+        categories = sfv["category"]
+        values = sfv["value"]
+        temp = pd.DataFrame(columns=categories, data=[[value for value in values]])
+        temp["sample_name"] = sample_name
+        combined_df = pd.concat([combined_df, temp], ignore_index=True)
+    return combined_df
     
 def main():
     args = argument_parser()
@@ -136,8 +149,9 @@ def main():
     samples_raw = client.raw.get_dataset_samples(study_name)
     samples = client.get_dataset_samples(study_name, use_processed_quantitation_type=False)
     sample_meta_df = get_sample_meta(samples_raw, samples)
-   # sample_meta_df = sample_meta_df.to_csv(f"{study_name}/sample_meta.tsv", sep="\t", index=False)
-    
+   # sample_factor_values = get_sample_factor_values(samples)    
+    # join on sample_name
+   # sample_meta_df = sample_meta_df.merge(sample_factor_values, on="sample_name", how="left", suffixes=("", "_factor_value"))
 
     single_cell_dimension = client.raw.get_dataset_single_cell_dimension(study_name)
     cell_level_meta = get_cell_level_meta(single_cell_dimension)
