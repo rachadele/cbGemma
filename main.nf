@@ -192,9 +192,6 @@ workflow.onComplete {
 	println "Cleaned up working directory: ${workflow.workDir}"
 	// print where output files are located
 	println "Cell Browser build complete. Output files are located in: ${params.cb_outdir}"
-	// print workdir
-	println "Work directory: ${workflow.workDir}"
-
 	println "View the dataset at https://dev.gemma.msl.ubc.ca/cellbrowser/"
 }
 
