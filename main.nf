@@ -15,13 +15,32 @@ process getCellMeta {
 	"""
 }
 
+process cleanCellMeta {
+	tag "$study_name"
+
+	input:
+	tuple val(study_name), path(cell_level_meta)
+	
+
+	output:
+	tuple val(study_name), path("**cleaned_cell_level_meta.tsv.gz"), emit: cleaned_cell_level_meta
+
+	script:
+	def remove_cols_pattern = params.remove_cols.join('|')
+	"""
+	gunzip -c ${cell_level_meta} > ${study_name}_cell_level_meta.tsv
+	REMOVE_COLS="${remove_cols_pattern}"
+    HEADER=\$(head -1 ${study_name}_cell_level_meta.tsv)
+    KEEP_COLS=\$(awk -F'\\t' -v pat="\$REMOVE_COLS" '{for(i=1;i<=NF;i++){if(\$i !~ pat){printf "%d,",i}}}' <<< "\$HEADER" | sed 's/,\$//')
+    cut -f\$KEEP_COLS ${study_name}_cell_level_meta.tsv > ${study_name}_cleaned_cell_level_meta.tsv
+	gzip ${study_name}_cleaned_cell_level_meta.tsv
+	"""
+
+}
 
 process getFullMatrix {
 	tag "$study_name"
 	label 'getFullMatrix'
-
-	//publishDir "${params.cb_build_dir}/full_matrices/${study_name}"
-
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
 
 	input:
@@ -49,7 +68,7 @@ process runCbScanpy {
 
 	conda "/home/rschwartz//anaconda3/envs/scanpyenv"
 
-	publishDir "${params.cb_build_dir}", mode: 'copy'
+	//publishDir "${params.cb_build_dir}", mode: 'copy'
 
 	input:
 	tuple val(study_name), path(cell_level_meta), path(full_matrix)
@@ -143,16 +162,17 @@ workflow {
 
 	// Call the process to get cell metadata
 	getCellMeta(study_names)
+	.set { cell_meta }
+
+	cleanCellMeta(cell_meta)
+	.set {clean_cell_meta}
 
 	getFullMatrix(study_names)
-
-	getCellMeta.out.cell_level_meta
-	.set { cell_level_meta }
 
 	getFullMatrix.out.full_matrix
 	.set { full_matrices }
 
-	cell_level_meta.combine(full_matrices, by: 0)
+	clean_cell_meta.combine(full_matrices, by: 0)
 	.set { cbInput }
 
 	// Run the cbScanpy process
