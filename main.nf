@@ -185,6 +185,11 @@ workflow {
 }
 
 workflow.onComplete {
+	// remove working directory
+	def cmd = "rm -rf ${workflow.workDir}"
+	cmd.execute().waitFor()
+	// print message
+	println "Cleaned up working directory: ${workflow.workDir}"
 	// print where output files are located
 	println "Cell Browser build complete. Output files are located in: ${params.cb_outdir}"
 	// print workdir
